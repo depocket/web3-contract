@@ -1,5 +1,5 @@
-const utils = require('./utils');
-const abi = require('ethjs-abi');
+import * as abi from 'ethjs-abi';
+import { default as utils } from './utils';
 const txObjectProperties = ['from', 'to', 'data', 'value', 'gasPrice', 'gas'];
 
 function createContractFunction(methodObject) {
@@ -35,34 +35,35 @@ function performCall({ methodObject, methodArgs }) {
   let providedTxObject = {};
 
   if (hasTransactionObject(methodArgs)) providedTxObject = methodArgs.pop();
-  const methodTxObject = Object.assign({},
-    self.defaultTxObject,
-    providedTxObject, {
-      to: self.address,
-    });
-  methodTxObject.data = abi.encodeMethod(methodObject, methodArgs);
+//   const methodTxObject = Object.assign({},
+//     providedTxObject, {
+//       to: '',
+//     }, {
+//         data: abi.encodeMethod(methodObject, methodArgs)
+//     });
 
   if (methodObject.constant === false) {
     queryMethod = 'sendTransaction';
   }
 
-  const queryResult = await self.query[queryMethod](methodTxObject);
+  //const queryResult = self.query[queryMethod](methodTxObject);
 
   if (queryMethod === 'call') {
     // queryMethod is 'call', result is returned value
     try {
-      const decodedMethodResult = abi.decodeMethod(methodObject, queryResult);
+      const decodedMethodResult = abi.decodeMethod(methodObject, '');
       return decodedMethodResult;
     } catch (decodeFormattingError) {
-      const decodingError = new Error(`[ethjs-contract] while formatting incoming raw call data ${JSON.stringify(queryResult)} ${decodeFormattingError}`);
+      const decodingError = new Error(`[ethjs-contract] while formatting incoming raw call data ${JSON.stringify('')} ${decodeFormattingError}`);
       throw decodingError;
     }
   }
   // queryMethod is 'sendTransaction', result is txHash
-  return queryResult;
+  return 'ok';
 }
 
 class Contract {
+    address: string
     constructor(jsonInterface, address){
         this.address = address;
         var self = this;
@@ -80,7 +81,9 @@ class Contract {
                 // Todo: Need to implement signature
                 method.signature = 'signature';
                 self[method.name] = function() {
-                  RPC.Call(self.address, '0x000')
+                    // if RPC && RPC.Call {
+                    //     RPC.Call(self.address, '0x000')
+                    // }
                   return 'call success'
                 }//createContractFunction(method)
             } else if (method.type === 'event') {

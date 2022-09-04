@@ -8,8 +8,7 @@ const jsonInterfaceMethodToString = function (json) {
 
 const flattenTypes = function(includeTuple, puts)
 {
-    // console.log("entered _flattenTypes. inputs/outputs: " + puts)
-    var types = [];
+    var types = Array<string>();
 
     puts.forEach(function(param) {
         if (typeof param.components === 'object') {
@@ -20,21 +19,16 @@ const flattenTypes = function(includeTuple, puts)
             var arrayBracket = param.type.indexOf('[');
             if (arrayBracket >= 0) { suffix = param.type.substring(arrayBracket); }
             var result = flattenTypes(includeTuple, param.components);
-            // console.log("result should have things: " + result)
             if(Array.isArray(result) && includeTuple) {
-                // console.log("include tuple word, and its an array. joining...: " + result.types)
                 types.push('tuple(' + result.join(',') + ')' + suffix);
             }
             else if(!includeTuple) {
-                // console.log("don't include tuple, but its an array. joining...: " + result)
                 types.push('(' + result.join(',') + ')' + suffix);
             }
             else {
-                // console.log("its a single type within a tuple: " + result.types)
                 types.push('(' + result + ')');
             }
         } else {
-            // console.log("its a type and not directly in a tuple: " + param.type)
             types.push(param.type);
         }
     });
@@ -42,4 +36,7 @@ const flattenTypes = function(includeTuple, puts)
     return types;
 };
 
-module.exports = { jsonInterfaceMethodToString, flattenTypes }
+export default {
+    jsonInterfaceMethodToString,
+    flattenTypes
+}
