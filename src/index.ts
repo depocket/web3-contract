@@ -1,4 +1,4 @@
-import * as abi from 'ethjs-abi';
+const abi = require('ethjs-abi');
 import { default as utils } from './utils';
 
 interface TransactionArgs {
@@ -41,11 +41,8 @@ class Contract {
     if (typeof(methodArgs[0]) == 'boolean') {
       implicit = methodArgs.pop()
     }
-
     var res = this.RPC.Call(this.address, abi.encodeMethod(methodObject, methodArgs))
-
     if (queryMethod === 'call') {
-      // queryMethod is 'call', result is returned value
       try {
         const decodedMethodResult = abi.decodeMethod(methodObject, res);
         console.log(decodedMethodResult)
