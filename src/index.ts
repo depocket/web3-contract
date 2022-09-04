@@ -10,9 +10,14 @@ interface TransactionArgs {
 class Contract {
   address: string
   RPC: any
+  Logger: any
 
   setRPC(RPC: any) {
     this.RPC = RPC;
+  }
+
+  setLogger(logger: any) {
+    this.Logger = logger;
   }
 
   constructor(jsonInterface, address: string){
@@ -45,7 +50,6 @@ class Contract {
     if (queryMethod === 'call') {
       try {
         const decodedMethodResult = abi.decodeMethod(methodObject, res);
-        console.log(decodedMethodResult)
         return decodedMethodResult;
       } catch (decodeFormattingError) {
         const decodingError = new Error(`[ethjs-contract] while formatting incoming raw call data ${JSON.stringify(res)} ${decodeFormattingError}`);
