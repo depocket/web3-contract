@@ -1,0 +1,21 @@
+{
+  "name": "web3-sdk",
+  "version": "1.0.0",
+  "description": "Web3 ABI wrapper used to interactive with RPC on DePocket Data Transform on Edge Function",
+  "main": "index.js",
+  "repository": "https://github.com/depocket/web3-sdk",
+  "author": "Himitsuko",
+  "license": "GNU",
+  "private": true,
+  "scripts": {
+    "build:node": "esbuild src/contract.js --bundle  --format=iife --global-name=Contract --platform=node --outfile=./dist/out.js",
+    "build:esm": "esbuild src/contract.js --bundle --format=iife --global-name=Contract --platform=browser --outfile=./dist/out.esm.js",
+    "test": "node ./tests/contract.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.15.6"
+  },
+  "dependencies": {
+    "ethjs-abi": "^0.2.1"
+  }
+}
