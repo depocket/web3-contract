@@ -62,8 +62,9 @@ function performCall({ methodObject, methodArgs }) {
   return 'ok';
 }
 
-class Contract {
+export class Contract {
     address: string
+
     constructor(jsonInterface, address){
         this.address = address;
         var self = this;
@@ -92,5 +93,3 @@ class Contract {
         })
     }
 }
-
-module.exports = Contract;
