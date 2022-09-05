@@ -7,7 +7,7 @@ esbuild.build({
   //outfile: 'lib/index.js',
   outdir: 'lib',
   bundle: true,
-  minify: false,
+  minify: true,
   platform: 'node',
   sourcemap: false,
   format: 'iife',
