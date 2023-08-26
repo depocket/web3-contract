@@ -1,14 +1,9 @@
 const abi = require('ethjs-abi');
 import { default as utils } from './utils';
 
-interface TransactionArgs {
-  to: string,
-  from?: string,
-  data: any,
-}
-
 class Contract {
   address: string
+  jsonAbi: string
   RPC: any
   Logger: any
 
@@ -20,12 +15,13 @@ class Contract {
     this.Logger = logger;
   }
 
-  constructor(jsonInterface, address: string){
+  constructor(jsonInterface: string, address: string){
     this.address = address;
     var self = this;
     if(!jsonInterface || !(Array.isArray(jsonInterface))) {
       throw new Error("Missing contract ABI");
     }
+    this.jsonAbi = jsonInterface
     jsonInterface.map(function(method) {
       var funcName;
       method.constant = (method.stateMutability === "view" || method.stateMutability === "pure" || method.constant);
@@ -66,6 +62,14 @@ class Contract {
       const promise = self.performCall({ methodObject, methodArgs });
       return promise;
     };
+  }
+
+  decodeTransactionInput(inputData: string) {
+    return abi.decodeMethod(this.jsonAbi, inputData);
+  }
+
+  decodeEvent(data: string, topics: string[]) {
+    return abi.decodeEvent(this.jsonAbi, data, topics);
   }
 }
 
