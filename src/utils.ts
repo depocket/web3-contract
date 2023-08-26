@@ -36,7 +36,52 @@ const flattenTypes = function(includeTuple, puts)
     return types;
 };
 
+const isHexString = function(value, length=0) {
+    if (typeof(value) !== 'string' || !value.match(/^0x[0-9A-Fa-f]*$/)) {
+      return false;
+    }
+    if (length && value.length !== 2 + 2 * length) { return false; }
+    return true;
+}
+
+function getKeys(params, key, allowEmpty) {
+    var result: string[] = []; // eslint-disable-line
+  
+    if (!Array.isArray(params)) { throw new Error(`[ethjs-abi] while getting keys, invalid params value ${JSON.stringify(params)}`); }
+  
+    for (var i = 0; i < params.length; i++) { // eslint-disable-line
+      var value = params[i][key];  // eslint-disable-line
+      if (allowEmpty && !value) {
+        value = '';
+      } else if (typeof(value) !== 'string') {
+        throw new Error('[ethjs-abi] while getKeys found invalid ABI data structure, type value not string');
+      }
+      result.push(value); // eslint-disable-line
+    }
+  
+    return result;
+}
+
+function hexOrBuffer(valueInput, name) {
+    var value = valueInput; // eslint-disable-line
+    if (!Buffer.isBuffer(value)) {
+      if (!isHexString(value)) {
+        const error = new Error(name ? (`[ethjs-abi] invalid ${name}`) : '[ethjs-abi] invalid hex or buffer, must be a prefixed alphanumeric even length hex string');
+        throw error;
+      }
+  
+      value = value.substring(2);
+      if (value.length % 2) { value = `0${value}`; }
+      value = new Buffer(value, 'hex');
+    }
+  
+    return value;
+}
+  
+
 export default {
     jsonInterfaceMethodToString,
-    flattenTypes
+    flattenTypes,
+    hexOrBuffer,
+    getKeys
 }
